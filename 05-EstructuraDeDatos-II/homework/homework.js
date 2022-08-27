@@ -3,17 +3,74 @@
 /*
 Implementar la clase LinkedList, definiendo los siguientes métodos:
   - add: agrega un nuevo nodo al final de la lista;
-  - remove: elimina el último nodo de la lista y retorna su valor (tener en cuenta el caso particular de una lista de un solo nodo y de una lista vacía);
-  - search: recibe un parámetro y lo busca dentro de la lista, con una particularidad: el parámetro puede ser un valor o un callback. En el primer caso, buscamos un nodo cuyo valor coincida con lo buscado; en el segundo, buscamos un nodo cuyo valor, al ser pasado como parámetro del callback, retorne true. 
+  - remove: elimina el último nodo de la lista y retorna su valor (tener en cuenta el caso particular de una 
+    lista de un solo nodo y de una lista vacía);
+  - search: recibe un parámetro y lo busca dentro de la lista, con una particularidad: el parámetro puede ser 
+  un valor o un callback. En el primer caso, buscamos un nodo cuyo valor coincida con lo buscado; en el 
+  segundo, buscamos un nodo cuyo valor, al ser pasado como parámetro del callback, retorne true. 
   Ejemplo: 
   search(3) busca un nodo cuyo valor sea 3;
-  search(isEven), donde isEven es una función que retorna true cuando recibe por parámetro un número par, busca un nodo cuyo valor sea un número par.
+  search(isEven), donde isEven es una función que retorna true cuando recibe por parámetro un número par, 
+  busca un nodo cuyo valor sea un número par.
   En caso de que la búsqueda no arroje resultados, search debe retornar null.
 */
 
-function LinkedList() {}
+class LinkedList {
+  constructor(){
+    this.head = null;
+  }
+  add(value){  
+    let node = new Node(value);
+    let current = this.head;
+    if(!current) {
+      this.head = node;
+      return node;
+    }
+    while(current.next) {
+      current = current.next;
+    }
+    current.next = node;
+    return node;
+  }
+  remove(){
+    //si la lista esta vacia
+    if(!this.head) return null;
+    //si la lista tiene 1 elemento
+    if(this.head && !this.head.next) {
+      let rmNode = this.head;
+      this.head = null;
+      return rmNode.value;
+    }
+    //si la lista tiene muchos valores
+    let current = this.head;
+    while(current.next.next) {
+      current = current.next;
+    }
+    let rmNode = current.next;
+    current.next = null;
+    return rmNode.value;
+  }
+  search(value){
+    if(!this.head) return null;
+    let current = this.head;
+    while(current) {
+      if(current.value === value) return current.value
+      else if(typeof value === 'function') {
+        if(value(current.value)) return current.value
+      }
+      current = current.next;
+    }
+    return null;
+  }
+}
 
-function Node(value) {}
+class Node {
+  constructor(value){
+    this.value = value;
+    this.next = null;
+  }
+}
+
 
 /*
 Implementar la clase HashTable.
@@ -30,7 +87,38 @@ La clase debe tener los siguientes métodos:
 Ejemplo: supongamos que quiero guardar {instructora: 'Ani'} en la tabla. Primero puedo chequear, con hasKey, si ya hay algo en la tabla con el nombre 'instructora'; luego, invocando set('instructora', 'Ani'), se almacenará el par clave-valor en un bucket específico (determinado al hashear la clave)
 */
 
-function HashTable() {}
+function HashTable() {
+  this.buckets = [];
+  this.numBuckets = 35;
+}
+
+HashTable.prototype.hash = function(key) {
+  let sum = 0;
+  for (let i = 0; i < key.length; i++) {
+    sum += key.charCodeAt(i);
+  }
+  return sum % this.numBuckets;
+}
+
+HashTable.prototype.set = function(key, value) {
+if(typeof key !== 'string') throw new TypeError('Key must be a string');
+let posArr = this.hash(key);
+if(this.buckets[posArr] === undefined) {
+  this.buckets[posArr] = {};
+}
+this.buckets[posArr][key] = value;
+}
+
+HashTable.prototype.get = function(key) {
+let posArr = this.hash(key);
+return this.buckets[posArr][key];
+}
+
+HashTable.prototype.hasKey = function(key) {
+let posArr = this.hash(key);
+return this.buckets[posArr].hasOwnProperty(key);
+}
+
 
 // No modifiquen nada debajo de esta linea
 // --------------------------------
