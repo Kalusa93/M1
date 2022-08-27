@@ -15,9 +15,26 @@ Como ejercicio adicional y completamente opcional, al terminar de resolver este 
 */
 
 function nFactorial(n) {
+  if(n >= 0 && n < 2) {
+    return 1;
+  }
+  else if(n < 0) {
+    return 'El factorial no esta definido para numeros negativos';
+  }
+  return n*nFactorial(n - 1);
 }
 
 function nFibonacci(n) {
+  if(n < 0) {
+    return 'La sucesion de Fibonacci no esta definida para numeros negativos';
+  }
+  else if(n === 0) {
+    return 0;
+  }
+  else if(n === 1) {
+    return 1;
+  }
+  return nFibonacci(n - 1) + nFibonacci(n - 2);
 }
 
 /*
@@ -30,7 +47,19 @@ Pueden utilizar class o función constructora.
 */
 
 function Queue() {
+  this.arr = [];
 
+  Queue.prototype.enqueue = function(value) {
+    return this.arr.unshift(value);
+  }
+  
+  Queue.prototype.dequeue = function(value) {
+    return this.arr.pop(value);
+  }
+  
+  Queue.prototype.size = function() {
+    return this.arr.length;
+  }
 }
 
 // No modifiquen nada debajo de esta linea
